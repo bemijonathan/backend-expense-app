@@ -1,3 +1,5 @@
+import chalk from "chalk"
+
 export const getOne = model => async (req, res) => {
     try {
         const doc = await model
@@ -32,12 +34,9 @@ export const selfGetMany = model => async (req, res) => {
 
 
 export const getMany = model => async (req, res) => {
+    console.log(chalk.yellow(JSON.stringify(model)))
     try {
-        const docs = await model
-            .findAll()
-            .lean()
-            .exec()
-
+        const docs = await model.findAll()
         res.status(200).json({ data: docs })
     } catch (e) {
         console.error(e)

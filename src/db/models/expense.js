@@ -39,9 +39,14 @@ export default (sequelize, DataTypes) => {
       }
     }
   }, {});
+
+  // Expense.be
   Expense.associate = (models) => {
     // associations can be defined here
-    Expense.belongsTo(models.User, { foriegnKey: 'userId', onDelete: 'CASCADE' })
+    Expense.belongsTo(models.User, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE'
+    })
   };
   return Expense;
 };

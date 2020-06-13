@@ -67,20 +67,20 @@ export const protect = async (req, res, next) => {
     let payload
     try {
         payload = await verifyToken(token)
+        console.log(payload);
     } catch (e) {
         return res.status(401).end()
     }
 
-    const user = await User.findById(payload.id)
-        .select('-password')
-        .lean()
-        .exec()
+    const user = await User.findByPk(payload.id)
+
+    console.log(JSON.stringify(User.Keys))
 
     if (!user) {
         return res.status(401).end()
     }
 
-    req.user = user
+    req.user = user.id
     next()
 }
 
