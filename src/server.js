@@ -21,20 +21,6 @@ app.use(urlencoded({ extended: true }))
 app.use("/auth", AuthRouter)
 app.use('/api/posts', postRoutes)
 
-// app.delete('/users' , async (req, res) => {
-// 	const result = await User.remove({}, (err , data) => {
-// 		if(err){
-// 			return res.status(400).send({err})
-// 		}else{
-// 			res.status(201).send({
-// 				data
-// 			})
-// 		}
-
-// 	})
-
-// })
-
 
 export const start = async (port) => {
     try {
