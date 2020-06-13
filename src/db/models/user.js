@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt"
 
 export default (sequelize, DataTypes) => {
   const User = sequelize.define('User',
@@ -42,7 +43,16 @@ export default (sequelize, DataTypes) => {
           },
         },
       }
-    }, {});
+    }, {
+      hooks:{
+        beforeCreate: function(user){
+          const salt = bcrypt.genSaltSync(10);
+          const hash = bcrypt.hashSync(user.dataValues.password, salt);
+          user.dataValues.password = hash
+          console.log(user)
+        }
+      }
+    });
   User.associate = (models) => {
     User.hasMany(models.Expense, {
       foreignKey: 'userId'

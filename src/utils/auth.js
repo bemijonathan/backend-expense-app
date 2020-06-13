@@ -1,13 +1,18 @@
-import config from '../config/secrets'
-import { User } from "../db/models"
-import jwt from 'jsonwebtoken'
+import config from '../config/secrets';
+import { User } from "../db/models";
+import jwt from 'jsonwebtoken';
 import { forgotPasswordMail, TokenForPassword, verifyEmailToken } from "./mailer";
+import bcrypt from "bcrypt";
 
 export const newToken = user => {
     console.log(user);
-    return jwt.sign({ id: user.id }, config.JWT_TOKEN, {
+    return jwt.sign({ id: user.dataValues.id }, config.JWT_TOKEN, {
         expiresIn: config.JWT_TIME
     })
+}
+
+export const checkPassword = async (user, password) => {
+  return await bcrypt.compare(password, user)
 }
 
 export const verifyToken = token =>
@@ -22,13 +27,12 @@ export const signup = async (req, res) => {
     if (!req.body.email || !req.body.password) {
         return res.status(400).send({ data: 'need email and password' })
     }
-
     try {
         const user = await User.create(req.body)
         const token = newToken(user)
         return res.status(201).send({ token })
     } catch (e) {
-        return res.status(500).send({ e })
+        return res.status(400).send({ e })
     }
 }
 
@@ -38,21 +42,22 @@ export const signin = async (req, res) => {
     }
     const invalid = { data: 'Invalid email and password combination' }
     try {
-        const user = await User.findOne({ email: req.body.email })
-            .select('email password')
-            .exec()
+        const user = await User.findAll({ where:{ email: req.body.email } })
         if (!user) {
             return res.status(401).send(invalid)
         }
-        const match = await user.checkPassword(req.body.password)
+        const match = await checkPassword(user[0].dataValues.password, req.body.password)
+
+        console.log(match)
+
         if (!match) {
             return res.status(401).send(invalid)
         }
-        const token = newToken(user)
+        const token = newToken(user[0])
         return res.status(201).send({ token })
     } catch (e) {
         console.error(e)
-        res.status(500).end()
+        res.status(401).end()
     }
 }
 

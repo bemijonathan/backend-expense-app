@@ -1,4 +1,4 @@
-export default {
+{
     "development": {
         "username": "mixed_code",
         "password": "mixed_code",

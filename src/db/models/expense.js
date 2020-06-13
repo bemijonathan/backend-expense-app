@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt"
+
 export default (sequelize, DataTypes) => {
   const Expense = sequelize.define('Expense', {
     title: {
@@ -38,7 +40,10 @@ export default (sequelize, DataTypes) => {
         as: 'userId',
       }
     }
-  }, {});
+  },
+  {
+    
+  });
 
   // Expense.be
   Expense.associate = (models) => {
