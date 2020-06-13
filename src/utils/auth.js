@@ -1,7 +1,7 @@
 import config from '../config/secrets'
-import { User } from '../resources/users/user.model'
+import { User } from "../db/models"
 import jwt from 'jsonwebtoken'
-import {forgotPasswordMail, TokenForPassword, verifyEmailToken} from "./mailer";
+import { forgotPasswordMail, TokenForPassword, verifyEmailToken } from "./mailer";
 
 export const newToken = user => {
     console.log(user);
@@ -86,45 +86,45 @@ export const protect = async (req, res, next) => {
 
 
 export const newEmail = async (req, res) => {
-	let user;
-	try {
-	let userId = await verifyEmailToken(req.headers.recoverytoken);
-	  user = await User.findOne({ _id: userId }).exec();
-      if (req.headers.recoverytoken === user.token.recoveryToken.toString()) {
-		let password = await user.newPassword(req.body.password)
-		let response = await User.findByIdAndUpdate(
-			{_id: userId}, 
-			{password, $set:{'token.recoveryToken': ""}},
-			{new:true})
-		res.status(201).send({data: newToken(response) })
-      }else{
-		return res.status(400).send({ error:"" });
-	  }
-    } catch (error) {
-      res.status(400).send({ error, details: "user not found" });
-	}    
-  }
-
-  
-export const forgotEmail = async(req, res) => {
-	const email = req.body.email;
+    let user;
     try {
-      const user = await User.findOne({ email })
-        .select("email id token")
-        .exec();
-      if (user) {
-        let token = TokenForPassword(user);
-        if (forgotPasswordMail(user.email, token)) {
-          user.token.recoveryToken = token;
-          await user.save();
-          res.status(200).send({ data: "mail sent" });
+        let userId = await verifyEmailToken(req.headers.recoverytoken);
+        user = await User.findOne({ _id: userId }).exec();
+        if (req.headers.recoverytoken === user.token.recoveryToken.toString()) {
+            let password = await user.newPassword(req.body.password)
+            let response = await User.findByIdAndUpdate(
+                { _id: userId },
+                { password, $set: { 'token.recoveryToken': "" } },
+                { new: true })
+            res.status(201).send({ data: newToken(response) })
         } else {
-          res.status(400).end();
+            return res.status(400).send({ error: "" });
         }
-      } else {
-        return res.status(400).end()
-      }
+    } catch (error) {
+        res.status(400).send({ error, details: "user not found" });
+    }
+}
+
+
+export const forgotEmail = async (req, res) => {
+    const email = req.body.email;
+    try {
+        const user = await User.findOne({ email })
+            .select("email id token")
+            .exec();
+        if (user) {
+            let token = TokenForPassword(user);
+            if (forgotPasswordMail(user.email, token)) {
+                user.token.recoveryToken = token;
+                await user.save();
+                res.status(200).send({ data: "mail sent" });
+            } else {
+                res.status(400).end();
+            }
+        } else {
+            return res.status(400).end()
+        }
     } catch (e) {
-      res.status(400).end();
+        res.status(400).end();
     }
 }

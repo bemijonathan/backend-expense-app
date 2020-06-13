@@ -1,4 +1,4 @@
 import { crudControllers } from "../../utils/crud";
-import { Post } from "./post.model";
+import { Expense } from "../../db/models";
 
-export default crudControllers(Post)
+export default crudControllers(Expense)

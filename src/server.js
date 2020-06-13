@@ -2,9 +2,7 @@ import express from "express"
 import morgan from "morgan"
 import cors from 'cors'
 import { json, urlencoded } from 'body-parser'
-import { dbConnection } from "./config/db"
 import postRoutes from "./resources/posts/post.routes"
-import {User} from "./resources/users/user.model"
 import AuthRouter  from "./utils/auth.route"
 
 
@@ -24,7 +22,7 @@ app.use('/api/posts', postRoutes)
 
 export const start = async (port) => {
     try {
-        await dbConnection()
+        
         app.listen(port, () => {
             console.log(`REST API on http://localhost:${port}/api`)
         })

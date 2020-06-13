@@ -16,10 +16,25 @@ export const getOne = model => async (req, res) => {
     }
 }
 
-export const getMany = model => async (req, res) => {
+export const selfGetMany = model => async (req, res) => {
     try {
         const docs = await model
             .find({ createdBy: req.user._id })
+            .lean()
+            .exec()
+
+        res.status(200).json({ data: docs })
+    } catch (e) {
+        console.error(e)
+        res.status(400).end()
+    }
+}
+
+
+export const getMany = model => async (req, res) => {
+    try {
+        const docs = await model
+            .findAll()
             .lean()
             .exec()
 
