@@ -34,6 +34,10 @@ export default (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.INTEGER,
+      allowNull:{
+        args:false,
+        msg:"user must exist"
+      },
       references: {
         model: 'User',
         key: 'id',
@@ -42,7 +46,7 @@ export default (sequelize, DataTypes) => {
     }
   },
   {
-    
+
   });
 
   // Expense.be

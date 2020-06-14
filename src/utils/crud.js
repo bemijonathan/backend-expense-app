@@ -3,71 +3,56 @@ import chalk from "chalk"
 export const getOne = model => async (req, res) => {
     try {
         const doc = await model
-            .findOne({ createdBy: req.user._id, _id: req.params.id })
-            .lean()
-            .exec()
-
+            .findAll({
+              where:{userId: req.user, id: req.params.id }
+            })
         if (!doc) {
-            return res.status(400).end()
+            return res.status(404).end()
         }
-
-        res.status(200).json({ data: doc })
+        res.status(200).json({ data: doc[0] })
     } catch (e) {
         console.error(e)
         res.status(400).end()
     }
 }
-
-export const selfGetMany = model => async (req, res) => {
-    try {
-        const docs = await model
-            .find({ createdBy: req.user._id })
-            .lean()
-            .exec()
-
-        res.status(200).json({ data: docs })
-    } catch (e) {
-        console.error(e)
-        res.status(400).end()
-    }
-}
-
 
 export const getMany = model => async (req, res) => {
     console.log(chalk.yellow(JSON.stringify(model)))
     try {
-        const docs = await model.findAll()
+        const docs = await model.findAll({
+          where: {userId: req.user}
+        })
         res.status(200).json({ data: docs })
     } catch (e) {
         console.error(e)
-        res.status(400).end()
+        res.status(400).json({error:e})
     }
 }
 
 export const createOne = model => async (req, res) => {
-    const createdBy = req.user._id
+    let userId = req.user
     try {
-        const doc = await model.create({ ...req.body, createdBy })
+        const doc = await model.create({ ...req.body, userId })
         res.status(201).json({ data: doc })
     } catch (e) {
         console.error(e)
-        res.status(400).end()
+        res.status(400).send({error:e})
     }
 }
 
 export const updateOne = model => async (req, res) => {
     try {
-        const updatedDoc = await model
-            .findOneAndUpdate(
-                {
-                    createdBy: req.user._id,
-                    _id: req.params.id
-                },
-                req.body,
-                { new: true }
-            )
-            .lean()
-            .exec()
+        let updatedDoc = await model
+            .findByPk(req.params.id)
+
+            if( updatedDoc.userId === req.user){
+              updatedDoc.update({
+                ...req.body
+              })
+              await updatedDoc.save()
+            }else{
+              return res.status(401).end()
+            }
 
         if (!updatedDoc) {
             return res.status(400).end()
@@ -82,15 +67,16 @@ export const updateOne = model => async (req, res) => {
 
 export const removeOne = model => async (req, res) => {
     try {
-        const removed = await model.findOneAndRemove({
-            createdBy: req.user._id,
-            _id: req.params.id
+        const removed = await model.destroy({
+          where:{
+            userId: req.user,
+            id: req.params.id
+          }
         })
 
         if (!removed) {
             return res.status(400).end()
         }
-
         return res.status(200).json({ data: removed })
     } catch (e) {
         console.error(e)

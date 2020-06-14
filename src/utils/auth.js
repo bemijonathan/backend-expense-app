@@ -79,7 +79,7 @@ export const protect = async (req, res, next) => {
 
     const user = await User.findByPk(payload.id)
 
-    console.log(JSON.stringify(User.Keys))
+    console.log(JSON.stringify(user))
 
     if (!user) {
         return res.status(401).end()
@@ -87,6 +87,7 @@ export const protect = async (req, res, next) => {
 
     req.user = user.id
     next()
+
 }
 
 
