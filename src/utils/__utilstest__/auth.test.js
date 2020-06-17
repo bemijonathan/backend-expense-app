@@ -1,10 +1,11 @@
+/* eslint-disable no-undef */
 import *as auth from '../auth'
 import jwt from 'jsonwebtoken'
 
 const user = {
-    id:"owr345ee",
-    email:"john@g.com",
-    password:"324ewwrhfverjhwe345"
+    id: "owr345ee",
+    email: "john@g.com",
+    password: "324ewwrhfverjhwe345"
 }
 
 test("generate auth token", () => {

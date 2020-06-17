@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt"
+// import bcrypt from "bcrypt"
 
 export default (sequelize, DataTypes) => {
   const Expense = sequelize.define('Expense', {
@@ -34,9 +34,9 @@ export default (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull:{
-        args:false,
-        msg:"user must exist"
+      allowNull: {
+        args: false,
+        msg: "user must exist"
       },
       references: {
         model: 'User',
@@ -45,9 +45,9 @@ export default (sequelize, DataTypes) => {
       }
     }
   },
-  {
+    {
 
-  });
+    });
 
   // Expense.be
   Expense.associate = (models) => {

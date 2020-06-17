@@ -1,9 +1,9 @@
 
 const keys = {
-	JWT_TOKEN : "template",
-	JWT_TIME : "5h",
-	JWT_EMAIL:"ordcycle_mailing",
-	JWT_EMAIL_TIME:"1h"
+	JWT_TOKEN: process.env.JWT_TOKEN,
+	JWT_TIME: process.env.JWT_TIME,
+	JWT_EMAIL: process.env.JWT_EMAIL,
+	JWT_EMAIL_TIME: process.env.JWT_EMAIL_TIME
 }
 
 export default keys
