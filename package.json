@@ -9,7 +9,7 @@
         "build": "babel src --out-dir dist",
         "restart": "rimraf dist && yarn build && yarn start",
         "start": "node dist/index.js",
-        "heroku-postbuild": "yarn build"
+        "heroku-postbuild": "npm build"
     },
     "keywords": [],
     "author": "",
