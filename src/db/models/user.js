@@ -10,6 +10,17 @@ export default (sequelize, DataTypes) => {
           msg: 'Please enter your name'
         }
       },
+      auth: {
+        type: DataTypes.STRING,
+        allowNull: {
+          args: false,
+          defaultValue: "local",
+          msg: 'please spify auth type'
+        },
+        validate: {
+          isIn: [['google', 'local']]
+        },
+      },
       username: {
         type: DataTypes.STRING,
         allowNull: {
@@ -34,7 +45,7 @@ export default (sequelize, DataTypes) => {
         },
       },
       password: {
-        type: DataTypes.STRING, allowNull: { args: false, msg: 'Please enter a password' },
+        type: DataTypes.STRING,
         validate: {
           isNotShort: (value) => {
             if (value.length < 8) {
@@ -44,15 +55,15 @@ export default (sequelize, DataTypes) => {
         },
       }
     }, {
-      hooks:{
-        beforeCreate: function(user){
-          const salt = bcrypt.genSaltSync(10);
-          const hash = bcrypt.hashSync(user.dataValues.password, salt);
-          user.dataValues.password = hash
-          console.log(user)
-        }
+    hooks: {
+      beforeCreate: function (user) {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(user.dataValues.password, salt);
+        user.dataValues.password = hash
+        console.log(user)
       }
-    });
+    }
+  });
   User.associate = (models) => {
     User.hasMany(models.Expense, {
       foreignKey: 'userId'
