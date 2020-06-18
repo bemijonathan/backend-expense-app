@@ -57,10 +57,12 @@ export default (sequelize, DataTypes) => {
     }, {
     hooks: {
       beforeCreate: function (user) {
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(user.dataValues.password, salt);
-        user.dataValues.password = hash
-        console.log(user)
+        if (user.dataValues.auth === "local") {
+          const salt = bcrypt.genSaltSync(10);
+          const hash = bcrypt.hashSync(user.dataValues.password, salt);
+          user.dataValues.password = hash
+          console.log(user)
+        }
       }
     }
   });

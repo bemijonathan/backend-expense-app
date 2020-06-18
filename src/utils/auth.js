@@ -3,6 +3,7 @@ import { User } from "../db/models";
 import jwt from 'jsonwebtoken';
 import { forgotPasswordMail, TokenForPassword, verifyEmailToken } from "./mailer";
 import bcrypt from "bcrypt";
+import chalk from 'chalk';
 
 export const newToken = user => {
     console.log(user);
@@ -12,7 +13,7 @@ export const newToken = user => {
 }
 
 export const checkPassword = async (user, password) => {
-  return await bcrypt.compare(password, user)
+    return await bcrypt.compare(password, user)
 }
 
 export const verifyToken = token =>
@@ -28,11 +29,31 @@ export const signup = async (req, res) => {
         return res.status(400).send({ data: 'need email and password' })
     }
     try {
-        const user = await User.create(req.body)
+        const user = await User.create({ ...req.body, auth: "local" })
         const token = newToken(user)
         return res.status(201).send({ token })
     } catch (e) {
         return res.status(400).send({ e })
+    }
+}
+
+export const socialAuth = async (req, res) => {
+    const { name, username, email } = req.body
+    if (!name.length || !username.length || !email.length) return res.status(422).end()
+    try {
+        const user = await User.findAll({ where: { email: req.body.email } })
+        let token;
+        if (user) {
+            token = newToken(user)
+            return res.status(201).send({ token })
+        } else {
+            const newuser = await User.create({ ...req.body, auth: "google" })
+            token = newToken(newuser)
+        }
+        return res.status(201).send({ token })
+    } catch (error) {
+        console.log(chalk.greenBright(error))
+        res.status(422).end()
     }
 }
 
@@ -42,7 +63,7 @@ export const signin = async (req, res) => {
     }
     const invalid = { data: 'Invalid email and password combination' }
     try {
-        const user = await User.findAll({ where:{ email: req.body.email } })
+        const user = await User.findAll({ where: { email: req.body.email } })
         if (!user) {
             return res.status(401).send(invalid)
         }
@@ -89,7 +110,6 @@ export const protect = async (req, res, next) => {
     next()
 
 }
-
 
 export const newEmail = async (req, res) => {
     let user;
