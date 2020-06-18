@@ -4,12 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest",
-        "dev": "nodemon --exec yarn restart",
-        "build": "babel src --out-dir dist",
-        "restart": "rimraf dist && yarn build && yarn start",
-        "start": "node ./dist/index.js",
-        "heroku-postbuild": "npm build"
+        "test": "rimraf dist && jest",
+        "build": "babel src -d dist",
+        "start": "npm run build && node dist/index.js",
+        "dev": "nodemon --exec npm run restart",
+        "restart": "rimraf dist && npm run start",
+        "heroku-postbuild": "npm run build"
     },
     "keywords": [],
     "author": "",
