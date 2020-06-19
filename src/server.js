@@ -23,7 +23,6 @@ app.use('/api/expenses', protect, postRoutes)
 
 export const start = async (port) => {
     try {
-
         app.listen(port, () => {
             console.log(`REST API on http://localhost:${port}/api`)
         })

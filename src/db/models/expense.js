@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
         msg: "please enter title"
       },
       validate: {
-        len: [2, 10]
+        len: [2, 30]
       }
     },
     amount: {

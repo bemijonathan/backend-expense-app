@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer"
 import smtpTransport from "nodemailer-smtp-transport"
-import config from "../config/secrets"
 import jwt from "jsonwebtoken"
 import chalk from "chalk"
 
@@ -8,8 +7,8 @@ const transporter = nodemailer.createTransport(smtpTransport({
   service: "gmail",
   host: "smtp.gmail.com",
   auth: {
-    user: "bemijonathan",
-    pass: "atieneology"
+    user: process.env.username,
+    pass: process.env.password
   }
 }))
 
@@ -30,7 +29,7 @@ const sendEmail = (mailOptions, callback) => {
 
 export const forgotPasswordMail = async (email, token) => {
   var mailOptions = {
-    from: "bemijonathan@gmail.com",
+    from: process.env.username + "gmail.com",
     to: email,
     subject: "RESET PASSWORD",
     text: "Click on this link to reset your password" + token
@@ -43,14 +42,14 @@ export const forgotPasswordMail = async (email, token) => {
 
 // this generates token for forgot password
 export const TokenForPassword = (user) => {
-  return jwt.sign({ id: user.id }, config.JWT_EMAIL, {
-    expiresIn: config.JWT_EMAIL_TIME
+  return jwt.sign({ id: user.id }, process.env.JWT_EMAIL, {
+    expiresIn: process.env.JWT_EMAIL_TIME
   })
 }
 
-export const verifyEmailToken = (token) => 
+export const verifyEmailToken = (token) =>
   new Promise((resolve, reject) => {
-    jwt.verify(token, config.JWT_EMAIL, (err, payload) => {
+    jwt.verify(token, process.env.JWT_EMAIL, (err, payload) => {
       if (err) return reject(err)
       resolve(payload.id)
     })

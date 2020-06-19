@@ -8,11 +8,12 @@
         "dialect": "postgres"
     },
     "test": {
-        "username": "root",
-        "password": null,
+        "username": "mixed_code",
+        "password": "mixed_code",
         "database": "database_test",
         "host": "127.0.0.1",
-        "dialect": "mysql"
+        "port": 5432,
+        "dialect": "postgres"
     },
     "production": {
         "database": "postgres://yovulmntixclnm:561ca5bb952584720d47ad2e893a5acbaca1f9722c960605c72ef39a381cacee@ec2-54-197-48-79.compute-1.amazonaws.com:5432/db8kd3ffjr04a9",

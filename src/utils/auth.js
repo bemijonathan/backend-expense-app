@@ -1,4 +1,3 @@
-import config from '../config/secrets';
 import { User } from "../db/models";
 import jwt from 'jsonwebtoken';
 import { forgotPasswordMail, TokenForPassword, verifyEmailToken } from "./mailer";
@@ -6,9 +5,9 @@ import bcrypt from "bcrypt";
 import chalk from 'chalk';
 
 export const newToken = user => {
-    console.log(user);
-    return jwt.sign({ id: user.dataValues.id }, config.JWT_TOKEN, {
-        expiresIn: config.JWT_TIME
+    console.log(user)
+    return jwt.sign({ id: user.dataValues.id }, process.env.JWT_TOKEN, {
+        expiresIn: process.env.JWT_TIME
     })
 }
 
@@ -18,7 +17,7 @@ export const checkPassword = async (user, password) => {
 
 export const verifyToken = token =>
     new Promise((resolve, reject) => {
-        jwt.verify(token, config.JWT_TOKEN, (err, payload) => {
+        jwt.verify(token, process.env.JWT_TOKEN, (err, payload) => {
             if (err) return reject(err)
             resolve(payload)
         })
@@ -43,8 +42,8 @@ export const socialAuth = async (req, res) => {
     try {
         const user = await User.findAll({ where: { email: req.body.email } })
         let token;
-        if (user) {
-            token = newToken(user)
+        if (user.length) {
+            token = newToken(user[0])
             return res.status(201).send({ token })
         } else {
             const newuser = await User.create({ ...req.body, auth: "google" })
