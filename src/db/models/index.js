@@ -4,17 +4,26 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const configurationfile = require('../config/config.json');
-const config = configurationfile[env]
+// const env = process.env.NODE_ENV || 'development';
+const config = require('../config/config.json');
+// const config = configurationfile[env]
 
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+if (process.env.NODE_ENV === "production") {
+  console.log("production db connected")
+  sequelize = new Sequelize(config.production.database);
+} else if (process.env.NODE_ENV === "test") {
+  console.log("test db connected")
+  sequelize = new Sequelize(config.test.database, config.test.username, config.test.password, {
+    ...config.test
+  });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  console.log("developement db")
+  sequelize = new Sequelize(config.development.database, config.development.username, config.development.password, {
+    ...config.development
+  });
 }
 
 fs

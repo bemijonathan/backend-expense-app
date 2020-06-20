@@ -1,5 +1,3 @@
 {
-    "watch": [
-        "src/**/*.js"
-    ]
+    "watch": ["src"]
 }
