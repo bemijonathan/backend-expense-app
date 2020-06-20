@@ -5,9 +5,7 @@ import { json, urlencoded } from 'body-parser'
 import postRoutes from "./resources/expense/expense.routes"
 import AuthRouter from "./utils/auth.route"
 import { protect } from "./utils/auth"
-import env from "dotenv";
 
-env.config()
 const app = express()
 
 app.use(morgan("dev"))
