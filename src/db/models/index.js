@@ -7,17 +7,15 @@ const basename = path.basename(__filename);
 const config = require('../config/config.json');
 import env from "dotenv"
 env.config()
+
 const db = {};
 
 let sequelize;
 
-console.log(process.env)
 
 if (process.env.NODE_ENV === "production") {
   console.log("production db connected", process.env.NODE_ENV)
-  sequelize = new Sequelize(config.production.database, config.production.username, config.production.password, {
-    ...config.production
-  });
+  sequelize = new Sequelize(config.production.database);
 }
 else if (process.env.NODE_ENV === "test") {
   console.log("test db connected", process.env.NODE_ENV)

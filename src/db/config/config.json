@@ -16,12 +16,8 @@
         "dialect": "postgres"
     },
     "production": {
+        "database": "postgres://yovulmntixclnm:561ca5bb952584720d47ad2e893a5acbaca1f9722c960605c72ef39a381cacee@ec2-54-197-48-79.compute-1.amazonaws.com:5432/db8kd3ffjr04a9",
         "dialect": "postgres",
-        "host": "ec2-54-197-48-79.compute-1.amazonaws.com",
-        "database": "db8kd3ffjr04a9",
-        "username": "yovulmntixclnm",
-        "port": 5432,
-        "password": "561ca5bb952584720d47ad2e893a5acbaca1f9722c960605c72ef39a381cacee",
         "dialectOptions": {
             "ssl": true
         }

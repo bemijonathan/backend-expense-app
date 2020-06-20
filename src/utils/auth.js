@@ -32,6 +32,10 @@ export const signup = async (req, res) => {
         const token = newToken(user)
         return res.status(201).send({ token })
     } catch (e) {
+        // console.log(e)
+        // let error = e.error.map(e => {
+        //     return { message: e.message }
+        // })
         return res.status(400).send({ e })
     }
 }
